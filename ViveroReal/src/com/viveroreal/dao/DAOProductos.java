@@ -25,7 +25,7 @@ public class DAOProductos implements IDaoProductos{
     public void conectarse() {       
         try{
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/viveroreal?user=root&password=");
+            cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/viveroreal?user=root&password=root");
         }catch(Exception e){
             System.out.println(e.getMessage());
         }
@@ -146,9 +146,7 @@ public class DAOProductos implements IDaoProductos{
     @Override
     public ArrayList listarTipoProducto() {
         ArrayList listaTipoProducto = new ArrayList();
-        
-        TipoXProducto tprod;
-        
+        TipoXProducto tprod;     
         try{
             Statement st;
             ResultSet rs;
@@ -157,8 +155,6 @@ public class DAOProductos implements IDaoProductos{
             while(rs.next()){
                 tprod = new TipoXProducto(rs.getInt("idTipoXProducto"), rs.getString("nombre"));
                 listaTipoProducto.add(tprod);
-                
-                
             }
             rs.close();
             rs = null;
@@ -168,6 +164,24 @@ public class DAOProductos implements IDaoProductos{
             System.out.println(e.getMessage());
         }
         return listaTipoProducto;
+    }
+
+    @Override
+    public int conteoTipoProductos() {
+        int x=0;
+        try{
+            Statement st;
+            ResultSet rs;
+            st = this.cn.createStatement();
+            rs = st.executeQuery("Select count(*) num from tipoxproducto");
+            while(rs.next()){
+            x = rs.getInt("num");
+            }
+            rs.close();
+            rs = null;
+        } catch (Exception e) {
+        }
+        return x;
     }
 }
 

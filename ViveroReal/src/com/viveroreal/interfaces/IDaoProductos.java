@@ -26,5 +26,7 @@ public interface IDaoProductos {
     public int conteoProductos();
     
     public ArrayList listarTipoProducto();
+    
+    public int conteoTipoProductos();
 
 }

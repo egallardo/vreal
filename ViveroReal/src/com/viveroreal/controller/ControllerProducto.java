@@ -7,6 +7,7 @@ package com.viveroreal.controller;
 import com.viveroreal.dao.DAOProductos;
 import com.viveroreal.entities.Producto;
 import com.viveroreal.entities.Filtro;
+import com.viveroreal.entities.TipoXProducto;
 import com.viveroreal.interfaces.IDaoProductos;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,11 +25,29 @@ public class ControllerProducto extends DefaultTableModel {
     private ArrayList listaProductos;
     private ArrayList listaTipoProducto;
     private Filtro filtro = new Filtro(false,false,"","");
+    private String[] datos;
 
     public ControllerProducto() {
         super();
         data=getRows();
         setDataVector(data,getCols());
+    }
+    
+    public String devolverNombreTipo(int x){
+        TipoXProducto txp;
+        ArrayList listaTxp;
+        String valor = null;
+        listaTxp = daoproductos.listarTipoProducto();
+        this.listaTipoProducto = listaTxp;
+
+        Iterator itr = listaTxp.iterator();
+        while (itr.hasNext()){
+            txp = (TipoXProducto)itr.next();
+            if (x == txp.getIdProducto()){
+                valor = txp.getNombre();
+            }
+        }
+        return valor;
     }
 
     public String[][] getRows() {
@@ -39,12 +58,13 @@ public class ControllerProducto extends DefaultTableModel {
         try{
             lista = daoproductos.listarProductos(this.filtro);
             this.listaProductos = lista;
+
             for(int fila=0;fila<numreg;fila++){
                 prod = (Producto)lista.get(fila);
                 data[fila][0] = Integer.toString(prod.getIdProducto());
                 data[fila][1] = prod.getNombre();
                 data[fila][2] = prod.getDescripcion();
-                data[fila][3] = Integer.toString(prod.getTipo());
+                data[fila][3] = devolverNombreTipo(prod.getTipo());
                 data[fila][4] = Double.toString(prod.getPrecio());
                 data[fila][5] = Double.toString(prod.getCosto());
                 data[fila][6] = Integer.toString(prod.getExistencia());
@@ -92,17 +112,23 @@ public class ControllerProducto extends DefaultTableModel {
     
     public String[] getListaTipoProductos(){
         listaTipoProducto = daoproductos.listarTipoProducto();
-        String[] lista = null;
-
-        //Iterator i = listaTipoProducto.iterator();
-        
-        //while(i.hasNext()){
-        for(int i = 0; i < listaTipoProducto.size() ; i++){
-            lista[i]= listaTipoProducto.get(i).toString();
+        try{
+            numreg = daoproductos.conteoTipoProductos();
+            //data=new String[numreg][2];
+            datos = new String[numreg];
+            for(int fila = 0; fila < listaTipoProducto.size() ; fila++){
+                TipoXProducto tProd; 
+                tProd = (TipoXProducto)listaTipoProducto.get(fila);
+                //data[fila][0] = Integer.toString(tProd.getIdProducto());
+                //data[fila][1] = tProd.getNombre();
+                datos[fila] = tProd.getNombre();
+            }
         }
-            //}
-            
-        return lista;
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        //}
+        return datos;
     }
     
     /**
