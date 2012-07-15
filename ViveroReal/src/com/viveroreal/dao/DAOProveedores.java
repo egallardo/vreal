@@ -25,7 +25,7 @@ public class DAOProveedores implements IDaoProveedores {
     public void conectarse() {
         try{
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/viveroreal?user=root&password=");
+            cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/viveroreal?user=root&password=root");
         }catch(Exception e){
             System.out.println(e.toString());
         }
